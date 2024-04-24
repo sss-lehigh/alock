@@ -1,0 +1,8 @@
+sending incremental file list
+alock/README.md
+            700  38%    0.00kB/s    0:00:00            1,810 100%    1.06MB/s    0:00:00 (xfr#1, to-chk=28/32)
+alock/main.cc
+            700   8%  683.59kB/s    0:00:00            8,455 100%    8.06MB/s    0:00:00 (xfr#2, to-chk=27/32)
+
+sent 2,962 bytes  received 152 bytes  2,076.00 bytes/sec
+total size is 91,792  speedup is 29.48

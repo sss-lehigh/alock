@@ -1,0 +1,2 @@
+node_id,runtime,unlimited_stream,op_count,region_size,thread_count,node_count,qp_max,p_local,min_key,max_key,localb,remoteb,count,runtime_ns,units,mean,stdev,min,p50,p90,p95,p99,p999,max
+1,10,0,10000000,22,1,10,1,50,1,1000,5,5,1064041,540605788,ns,8308.882850,4175.015968,4068.000000,4832.000000,12547.000000,12605.000000,0.000000,13094.000000,22507.000000

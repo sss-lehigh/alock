@@ -1,0 +1,6 @@
+/home/amanda/sss/alock/build/CMakeFiles/main.dir
+/home/amanda/sss/alock/build/CMakeFiles/package.dir
+/home/amanda/sss/alock/build/CMakeFiles/package_source.dir
+/home/amanda/sss/alock/build/CMakeFiles/test.dir
+/home/amanda/sss/alock/build/CMakeFiles/edit_cache.dir
+/home/amanda/sss/alock/build/CMakeFiles/rebuild_cache.dir
