@@ -1,6 +1,0 @@
-.cache
-.devcontainer
-.vscode
-build
-scripts
-.git
