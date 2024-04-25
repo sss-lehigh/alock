@@ -9,20 +9,33 @@ domain="apt.emulab.net"
 exe_dir="./build"
 exe="main"
 
+if [ $num_nodes != ${#machines[@]} ]; then
+    echo "Machines list size does not match exp.conf"
+    echo "Machines list size: ${#machines[@]}" 
+    echo "Experiment param num_nodes: ${num_nodes}"
+    exit 1
+fi
+
 usage() {
-    echo "Usage: $0 [-h] [-s]"
+    echo "Usage: $0 [-h] [-s] [-g]"
     echo "  -h: Display this help message"
     echo "  -s: Update arguments of experiment only"
+    echo "  -g: Run in gdb"
     exit 1
 }
 
-while getopts ":hs" option; do
+GDB=false
+
+while getopts ":hsg" option; do
     case "$option" in
         h)  # Display usage information
             usage
             ;;
         s)  # Update the specified package
             UPDATE=true
+            ;;
+        g)
+            GDB=true
             ;;
         \?) # Invalid option
             echo "Error: Invalid option -$OPTARG"
@@ -48,7 +61,6 @@ if [ "$UPDATE" != true ]; then
     done
 fi 
 
-
 echo "#!/bin/env bash" > exp_run.sh
 
 for m in ${machines[@]}; do
@@ -56,15 +68,33 @@ for m in ${machines[@]}; do
 done
 
 echo -n "tmux new-session \\; " >> exp_run.sh
-idx=0
-for m in ${machines[@]}; do
-  echo " \\" >> exp_run.sh
-  if [[ $idx -ne 0 ]]; then
-    echo " new-window \; \\" >> exp_run.sh
-  fi
-  echo -n " send-keys 'ssh ${user}@$m.$domain ./${exe} --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}' C-m \\; " >> exp_run.sh
-  idx=$((idx + 1))
-done
+
+
+if [ "$GDB" == true ]; then
+    echo "Running in gdb mode"
+    idx=0
+    for m in ${machines[@]}; do
+      echo " \\" >> exp_run.sh
+      if [[ $idx -ne 0 ]]; then
+        echo " new-window \; \\" >> exp_run.sh
+      fi
+      echo -n " send-keys 'ssh ${user}@$m.$domain gdb --args ${exe} --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}' C-m \\; " >> exp_run.sh
+      # echo " run \\" >> exp_run.sh
+      idx=$((idx + 1))
+    done
+fi
+
+if [ "$GDB" == false ]; then
+    idx=0
+    for m in ${machines[@]}; do
+      echo " \\" >> exp_run.sh
+      if [[ $idx -ne 0 ]]; then
+        echo " new-window \; \\" >> exp_run.sh
+      fi
+      echo -n " send-keys 'ssh ${user}@$m.$domain ./${exe} --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}' C-m \\; " >> exp_run.sh
+      idx=$((idx + 1))
+    done
+fi
 
 chmod +x exp_run.sh
 

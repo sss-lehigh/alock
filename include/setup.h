@@ -145,6 +145,5 @@ auto createNodeTopOpStream(const BenchmarkParams params, Peer self){
     }
   }
   REMUS_ASSERT(keys.size() == num_keys, "Error generating vector for prefilled stream");
-  _exit(0);
   return std::make_unique<remus::PrefilledStream<key_type>>(keys, num_keys);
 }
