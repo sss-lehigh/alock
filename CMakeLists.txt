@@ -6,7 +6,7 @@ option(DOCS "Set to build documentation" OFF)
 
 # Flags
 set(CXX_STANDARD 20 CACHE STRING "Uses C++20 or 23")
-set(LOG_LEVEL CACHE STRING "Log level options include TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, and OFF")
+set(LOG_LEVEL "INFO" CACHE STRING "Log level options include TRACE, DEBUG, INFO, WARN, ERROR, CRITICAL, and OFF")
 set(LOCK "RdmaSpinLock") #default
 
 #######################################################################################################################

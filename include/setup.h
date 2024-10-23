@@ -117,12 +117,12 @@ auto createRandomOpStream(const BenchmarkParams params, Peer self){
 
 auto createNodeTopOpStream(const BenchmarkParams params, Peer self){
   auto num_keys = params.op_count; 
-  int other = (self.id % 2 == 0) ? (self.id + 1) : (self.id -1);
+  int other = (self.id % 2 == 0) ? (self.id + 1) : (self.id - 1);
 
   auto range1 = calcLocalNodeRange(params, self.id);
   auto range2 = calcLocalNodeRange(params, other);
-  REMUS_INFO("Local Node Range for self ({}) is {} - {}", self.id, range1.first, range1.first);
-  REMUS_INFO("Local Node Range for other ({}) is {} - {}", self.id, range2.first, range2.first);
+  REMUS_INFO("Local Node Range for self ({}) is {} - {}", self.id, range1.first, range1.second);
+  REMUS_INFO("Local Node Range for other ({}) is {} - {}", self.id, range2.first, range2.second);
 
   std::vector<key_type> keys;
   keys.reserve(num_keys);

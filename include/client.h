@@ -42,13 +42,15 @@ template <class Operation> class Client {
 
     auto *client_ptr = client.get();
 
-
-    // REMUS_INFO("Using Node Topology Stream");
-    // auto stream = createNodeTopOpStream(params, client_ptr->self_);
-
-    REMUS_INFO("Using Random Stream");
-    auto stream = createRandomOpStream(params, client_ptr->self_);
-
+    std::unique_ptr<remus::PrefilledStream<key_type>> stream;
+    if (params.topology){
+      REMUS_INFO("Using Node Topology Stream");
+      stream = createNodeTopOpStream(params, client_ptr->self_);
+    } else {
+      REMUS_INFO("Using Random Stream");
+      stream = createRandomOpStream(params, client_ptr->self_);
+    }
+    
 
     std::barrier<>* barr = client_ptr->barrier_;
     barr->arrive_and_wait();
@@ -110,7 +112,7 @@ template <class Operation> class Client {
 
   remus::util::Status Apply(const key_type &op) {
     REMUS_DEBUG("Client {} attempting to lock key {}", self_.id, op);    
-    rdma_ptr<LockType> lock_addr = calcLockAddr(298);
+    rdma_ptr<LockType> lock_addr = calcLockAddr(op);
     REMUS_TRACE("Address for lock is {:x}", static_cast<uint64_t>(lock_addr));
     lock_handle_.Lock(lock_addr);
     std::atomic_thread_fence(std::memory_order_release);
@@ -120,9 +122,8 @@ template <class Operation> class Client {
     //          std::chrono::nanoseconds(params_.workload().think_time_ns()))
     //    ;
     // }
-    REMUS_TRACE("Client {} unlocking key {}...", self_.id, op);
-    lock_handle_.Unlock(lock_addr);
-    REMUS_TRACE("Unlocked key {}", 298);
+    // REMUS_TRACE("Client {} unlocking key {}...", self_.id, op);
+    // lock_handle_.Unlock(lock_addr);
     return remus::util::Status::Ok();
   }
 

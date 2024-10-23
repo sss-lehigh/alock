@@ -1,12 +1,16 @@
 #!/bin/env bash
 
+# 
+# This file is used to setup a new cloudlab experiment with the needed prerequisites to run experiments. 
+# 
+
 source "exp.conf"
 
-remus_dir="../remus-internal"
+remus_dir="../remus"
 exe="cloudlab_depend.sh"
 
 user=${ssh_user}
-machines=("apt152" "apt156" "apt144" "apt153" "apt138" "apt147" "apt163" "apt164" "apt157" "apt148")
+machines=("apt152" "apt145" "apt190" "apt179" "apt192" "apt186" "apt148" "apt181" "apt161" "apt183" "apt154" "apt139" "apt147" "apt184" "apt178" "apt141" "apt163" "apt162" "apt164" "apt159")
 domain="apt.emulab.net"
 
 for m in ${machines[@]}; do

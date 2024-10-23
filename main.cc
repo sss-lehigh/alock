@@ -11,7 +11,6 @@
 /// An initializer list of all of the command line argument names, types, and
 /// descriptions.
 ///
-// TODO: Is this too specific to CloudLab?
 auto ARGS = {
     remus::util::I64_ARG(
         "--node_id",
@@ -19,6 +18,9 @@ auto ARGS = {
     remus::util::I64_ARG(
         "--runtime",
         "How long to run the experiment for. Only valid if unlimited_stream"),
+    remus::util::BOOL_ARG_OPT(
+        "--topology",
+        "If the experiment should use the topology stream, or random stream by default."),
     remus::util::BOOL_ARG_OPT(
         "--unlimited_stream",
         "If the stream should be endless, stopping after runtime"),
@@ -35,13 +37,10 @@ auto ARGS = {
     remus::util::I64_ARG("--max_key", "The upper limit of the key range for operations"),
     remus::util::I64_ARG("--local_budget", "Initial budget for Alock Local Cohort"),
     remus::util::I64_ARG("--remote_budget", "Initial budget for Alock Remote Cohort"),
-    remus::util::BOOL_ARG_OPT(
-        "--topology",
-        "If the stream should use the specified topology"),
 };
 
 #define PATH_MAX 4096
-#define PORT_NUM 14000
+#define PORT_NUM 16160
 
 using namespace remus::rdma;
 
@@ -230,8 +229,8 @@ int main(int argc, char **argv) {
     }
     REMUS_DEBUG("Protobuf Lat Result {}\n{}", i, lat_result[i].result_as_debug_string());
   }
-
-  std::ofstream file_stream("tput_result.csv");
+  
+  std::ofstream file_stream("n" + std::to_string(params.node_count) + "_t" + std::to_string(params.thread_count) + "_tput_result.csv");
   file_stream << Result::result_as_string_header();
   for (int i = 0; i < params.thread_count; i++) {
     // Add results from all threads to result file
@@ -239,7 +238,7 @@ int main(int argc, char **argv) {
   }
   file_stream.close();
 
-  std::ofstream file_stream2("lat_result.csv");
+  std::ofstream file_stream2("n" + std::to_string(params.node_count) + "_t" + std::to_string(params.thread_count) + "_lat_result.csv");
   file_stream2 << Result::result_as_string_header();
   for (int i = 0; i < params.thread_count; i++) {
     // Add results from all threads to result file

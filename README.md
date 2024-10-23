@@ -23,14 +23,11 @@ Edit parameters in "alock/exp.conf".
 
 ## Build ALock Executable
 
-Create build directory. 
-``mkdir build``
-``cd build``
-
 Generate build system. 
-``cmake -DCMAKE_PREFIX_PATH=/opt/remus/lib/cmake -DCMAKE_MODULE_PATH=/opt/remus/lib/cmake ..``
+``cmake -DCMAKE_PREFIX_PATH=/opt/remus/lib/cmake -DCMAKE_MODULE_PATH=/opt/remus/lib/cmake -B build``
 
 Build. 
+``cd build``
 ``make -j``
 
 ### Log Level Flag:
@@ -49,7 +46,7 @@ Recommended levels in increasing information order:
 -DCMAKE_BUILD_TYPE=RelWithDebInfo (-o3 and -g)
 
 
-## Send to Clouldab and Run Exepriment'
+## Send to Clouldab and Run Exepriment
 
 <!-- update experiment parameters first -->
 Update exp.conf to desired experiment parameters. 
@@ -60,3 +57,11 @@ bash run.sh  <!-- TODO: Make sure to update with cloudlab node info  -->
 <!-- Reruns experiment without updating from exp.conf-->
 bash exp_run.sh
 
+<!-- Kills experiment name on nodes to take care of zombie processes -->
+bash shutdown.sh
+
+<!-- Use to collect results after running experiment. See file for download naming conventions. -->
+bash get_results.sh
+
+<!-- Use after collecting results to generate csv files and run plot script -->
+bash plot.sh
