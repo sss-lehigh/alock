@@ -99,9 +99,6 @@ int main(int argc, char **argv) {
   std::shared_ptr<rdma_capability> pools[mp];
   // Create one memory pool per thread
   uint32_t block_size = 1 << params.region_size;
-  //Calculate to determine size of memory pool needed (based on number of locks per mp)
-  // uint32_t bytesNeeded = ((64 * params.max_key) + (64 * 5 * params.thread_count));
-  // block_size = 1 << uint32_t(ceil(log2(bytesNeeded)));
   for (int i = 0; i < mp; i++) {
     mempool_threads.emplace_back(std::thread(
         [&](int mp_index, int self_index) {

@@ -65,20 +65,16 @@ auto createOpStream(const BenchmarkParams params, Peer self){
 
   for (auto i = 0; i < num_keys; i++){
     volatile int random = dist(gen);
-    // REMUS_DEBUG("random % 100 is {}", random % 100 + 1);
     auto random_p = (random % 100) + 1;
     if ( p_local == 1.0 || random_p <= p_local ){
       key_type key = (random % local_range) + local_start;
       keys.push_back(key);
-      // REMUS_DEBUG("local key");
     } else {
       //scale random float to number in full key range
       key_type key = (random % full_range) + min_key;
-      // REMUS_DEBUG("remote key");
       //retry until key is remote (i.e. not in local)
       while (key <= local_end && key >= local_start){
         random = dist(gen);
-        // REMUS_DEBUG("random % range is {}", random % full_range);
         key = (random % full_range) + min_key;
       }
       keys.push_back(key);
@@ -134,12 +130,10 @@ auto createNodeTopOpStream(const BenchmarkParams params, Peer self){
   for (auto i = 0; i < num_keys; i++){
     if (rng() % 2 == 0){
         volatile int random = dist1(gen);
-        // key_type key = (random % int(range1.second - range1.first + 1)) + range1.first;
         REMUS_DEBUG("Adding local key {}", random);
         keys.push_back(random);
     } else {
         volatile int random = dist2(gen);
-        // key_type key = (random % int(range2.second - range2.first + 1)) + range2.first;
         REMUS_DEBUG("Adding remote key {}", random);
         keys.push_back(random);
     }
