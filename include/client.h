@@ -122,8 +122,8 @@ template <class Operation> class Client {
     //          std::chrono::nanoseconds(params_.workload().think_time_ns()))
     //    ;
     // }
-    REMUS_TRACE("Client {} unlocking key {}...", self_.id, op);
-    lock_handle_.Unlock(lock_addr);
+    // REMUS_TRACE("Client {} unlocking key {}...", self_.id, op);
+    // lock_handle_.Unlock(lock_addr);
     return remus::util::Status::Ok();
   }
 
