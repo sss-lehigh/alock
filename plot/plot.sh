@@ -8,15 +8,14 @@
 data=tput 
 # threads=16
 
-for nodes in 2 4 6 8
+for nodes in 45
 do 
-    for mode in top
+    for mode in top rand
     do
-        # for threads in 1 2 4 6 7 8 9 10 12 16 20 22 24 28 30
-        for threads in 8
+        for threads in 1
         do 
             path="results/n${nodes}/write/t${threads}/${mode}"
-            python3 plot.py --save_dir "../${path}" --resfile '_result.csv' --exp ${data} --nodes ${nodes} --threads ${threads}
+            python3 plot.py --save_dir "../${path}" --resfile "n${nodes}_t${threads}_${data}_result.csv" --exp ${data} --nodes ${nodes} --threads ${threads}
         done
     done
 done

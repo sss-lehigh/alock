@@ -42,10 +42,10 @@ public:
   void Lock(rdma_ptr<RdmaSpinLock> lock) {  
     REMUS_DEBUG("RdmaSpinLock Locking addr {:x}", lock.address());
     lock_ = decltype(lock_)(lock.id(), lock.address());
-    while (pool_->CompareAndSwap(lock_, UNLOCKED, LOCKED) != UNLOCKED) {
-      cpu_relax();
-    }
-    // pool_->Write<uint64_t>(lock_, LOCKED, /*prealloc=*/local_);
+    // while (pool_->CompareAndSwap(lock_, UNLOCKED, LOCKED) != UNLOCKED) {
+    //   cpu_relax();
+    // }
+    pool_->Write<uint64_t>(lock_, LOCKED, /*prealloc=*/local_);
     std::atomic_thread_fence(std::memory_order_release);
     REMUS_DEBUG("RdmaSpinLock Locked addr {:x}", lock.address());
     return;

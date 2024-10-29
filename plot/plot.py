@@ -28,6 +28,8 @@ parser.add_argument('--save_dir', type=str, default='results', help='Directory c
 
 parser.add_argument('--resfile', type=str, default='_result.csv', help='Name of file with results')
 
+parser.add_argument('--plot', type=bool, default=False, help='Whether to use the merged df files to make plots') 
+
 FLAGS = parser.parse_args()
 
 def average_results(df):
@@ -64,8 +66,7 @@ def aggregate_results(df):
 
 def trim_columns(df):
     print(df)
-    columns = ['count', 'mean', 'stdev', 'min' ,'p50', 'p90' ,'p95' ,'p99' ,'p999', 'max']
-    # columns = ['thread_count', 'node_count', 'p_local', 'min_key', 'max_key', 'count', 'mean', 'stdev', 'min' ,'p50', 'p90' ,'p95' ,'p99' ,'p999', 'max']
+    columns = ['thread_count', 'node_count', 'p_local', 'min_key', 'max_key', 'count', 'mean', 'stdev', 'min' ,'p50', 'p90' ,'p95' ,'p99' ,'p999', 'max']
     newdf = df[columns]
     print(newdf)
     return newdf
@@ -73,7 +74,9 @@ def trim_columns(df):
 def merge_csv_results(root_dir):
     # Initialize an empty DataFrame to store merged results
     merged_df = pandas.DataFrame()
-    file = 'n' + str(FLAGS.nodes) + '_t' + str(FLAGS.threads) + '_' + FLAGS.exp + FLAGS.resfile
+    file = FLAGS.resfile
+    print("file name is" + str(file))
+    exit
     # Walk through the directory tree
     print("ROOT" , root_dir)
     for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -94,6 +97,30 @@ def merge_csv_results(root_dir):
         aggregate_results(df)
 
 merge_csv_results(FLAGS.save_dir)
+
+def plot_scaleout_tput(root_dir):
+    df = pandas.read_csv(file)
+    # header_row = df.head(1)
+    # averaged_results = df.tail(1)
+    # df = pandas.concat([header_row,averaged_results])
+    # filtered= df[df['thread_count'] <= 8]
+    filtered=df
+    plt.figure(figsize=(10,6))
+    seaborn.barplot(
+        data=filtered,
+        x='thread_count',
+        y="Throughput",
+        hue="mode"
+    )
+    plt.xticks(fontsize=14)
+    plt.yticks(fontsize=16)
+    plt.xlabel("Threads per Node / QPs per Node / Total QPs in System", fontsize=14)
+    plt.ylabel("Throughput (ops/s)", fontsize=18)
+    plt.legend(fontsize=18, loc='upper left')
+    filename= "plot.jpg"
+    plt.savefig(filename, format='jpg')
+    
+plot_scaleout_tput(FLAGS.save_dir)
 
 def plot_tput(file):
     df = pandas.read_csv(file)

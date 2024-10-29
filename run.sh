@@ -3,14 +3,17 @@
 source "exp.conf"
 
 # Modify these variables
+BUILD=1
 DEBUG=0 # 1 for debug with gdb
-SET_BASHRC=1 # set to 0 to not change bashrc remember .bashrc.old still exists
+SET_BASHRC=0 # set to 0 to not change bashrc remember .bashrc.old still exists
 USE_TMUX=0 # set 1 to use tmux, 0 to execute commands directly on machines
 
 user=${ssh_user}
-machines=("apt152" "apt145" "apt190" "apt179" "apt192" "apt186" "apt148" "apt181" "apt161" "apt183" "apt154" "apt139" "apt147" "apt184" "apt178" "apt141" "apt163" "apt162" "apt164" "apt159")
+machines=("apt177" "apt180" "apt157" "apt081" "apt129" "apt088" "apt174" "apt132" "apt086" "apt130" "apt142" "apt186" "apt068" "apt131" "apt158" "apt149" "apt083" "apt164" "apt145" "apt176" "apt076" "apt071" "apt152" "apt091" "apt138" "apt069" "apt173" "apt162" "apt156" "apt183" "apt178" "apt141" "apt175" "apt187" "apt136" "apt190" "apt179" "apt140" "apt154" "apt184" "apt163" "apt092" "apt192" "apt137" "apt072")
 domain="apt.emulab.net"
-node_list="node0,node1,node2,node3,node4,node5,node6,node7,node8,node9,node10,node11,node12,node13,node14,node15,node16,node17,node18,node19"
+
+node_list=$(printf "node%s," {0..45})
+node_list=${node_list%,}
 
 exe_dir="./build"
 #Modify this variable if changing the executable and make sure to modify cmd at line 59
@@ -18,17 +21,23 @@ exe="main"
 # exe="port_range.sh"
 #######################################################################################################################
 
-cd build
-make -j "$exe"
-cd ..
-
 # Shorten list of machines to only use the machines needed for the experiment
 machines=("${machines[@]:0:$num_nodes}")
 
-# Loops through all machines and connects to setup
-for m in "${machines[@]}"; do
-  ssh "${user}@$m.$domain" hostname 
-done
+if [[ $BUILD -eq 1 ]]; then
+  echo "BUILDING"
+  cd build
+  make -j "$exe"
+  cd ..
+  for m in "${machines[@]}"; do
+    ssh "${user}@$m.$domain" sudo pkill -SIGTERM "${exe}" &
+    scp "${exe_dir}/${exe}" "${user}@$m.$domain":~
+  done
+  # # Loops through all machines and connects to setup
+  # for m in "${machines[@]}"; do
+  #   ssh "${user}@$m.$domain" hostname 
+  # done
+fi
 
 if [[ $SET_BASHRC -eq 1 ]]; then
   # sets ulimit for open files to hard limit
@@ -47,8 +56,7 @@ else
 fi
 
 for m in "${machines[@]}"; do
-  ssh "${user}@$m.$domain" sudo pkill -SIGTERM "${exe}"
-  scp "${exe_dir}/${exe}" "${user}@$m.$domain":~
+  ssh "${user}@$m.$domain" sudo pkill -SIGTERM "${exe}" &
 done
 
 if [[ "$USE_TMUX" -eq 1 ]]; then
@@ -61,7 +69,7 @@ if [[ "$USE_TMUX" -eq 1 ]]; then
   echo -n "tmux new-session \\; " >> experiment_script.sh
   idx=0
   for m in "${machines[@]}"; do
-    max_key=$(( ${num_nodes} * 100 * ${thread_count} ))
+    max_key=$(( ${num_nodes} * 10 * ${thread_count} ))
     # Modify this if changing code
     # cmd="./${exe} -p 10000 -t 32 -n $node_list -i $idx"
     if [[ "${topology}" -eq 1 ]]; then
@@ -91,10 +99,14 @@ else
   # Execute the command directly on each machine
   for idx in "${!machines[@]}"; do
     m="${machines[$idx]}"
-    max_key=$(( ${num_nodes} * 100 * ${thread_count} ))
+    max_key=$(( ${num_nodes} * 10 * ${thread_count} ))
     
     # Construct the command to be executed
-    cmd="./${exe} --topology --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}"
+    if [[ "${topology}" -eq 1 ]]; then
+      cmd="./${exe} --topology --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}"
+    else
+      cmd="./${exe} --node_count ${num_nodes} --node_id ${idx} --runtime ${runtime} --op_count ${op_count} --min_key ${min_key} --max_key ${max_key} --region_size ${region_size} --thread_count ${thread_count} --qp_max ${thread_count} --p_local ${p_local} --local_budget ${local_budget} --remote_budget ${remote_budget}"
+    fi
 
     echo "Executing command on $m"
     
