@@ -45,7 +45,6 @@ public:
     while (pool_->CompareAndSwap(lock_, UNLOCKED, LOCKED) != UNLOCKED) {
       cpu_relax();
     }
-    // pool_->Write<uint64_t>(lock_, LOCKED, /*prealloc=*/local_);
     std::atomic_thread_fence(std::memory_order_release);
     REMUS_DEBUG("RdmaSpinLock Locked addr {:x}", lock.address());
     return;
