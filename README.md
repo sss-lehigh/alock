@@ -5,7 +5,7 @@
 
 In the directory now containing your alock repo, download our internal RDMA library, remus, which can be found at https://github.com/sss-lehigh/remus.git.
 
-Create a cloudlab experiment, or add your own cluster information to the $user, $machines and $domain variables in setup.sh. 
+Create a cloudlab experiment, or add your own cluster information to the $user, $machines and $domain variables in setup.sh. These scripts are intended to be run from a local computer containing the repos. Make sure this local computer is properly setup with an SSH key on cloudlab. 
 
 
 ## Build Dependecies

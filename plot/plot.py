@@ -32,6 +32,10 @@ parser.add_argument('--plot', type=bool, default=False, help='Whether to use the
 
 FLAGS = parser.parse_args()
 
+# ==========================================================================================================================================
+# Functions
+# ==========================================================================================================================================
+
 def average_results(df):
     # Aggregate columns (e.g., sum)
     aggregates = df.mean(axis=0)  # Sum along the columns
@@ -75,8 +79,6 @@ def merge_csv_results(root_dir):
     # Initialize an empty DataFrame to store merged results
     merged_df = pandas.DataFrame()
     file = FLAGS.resfile
-    print("file name is" + str(file))
-    exit
     # Walk through the directory tree
     print("ROOT" , root_dir)
     for dirpath, dirnames, filenames in os.walk(root_dir):
@@ -96,10 +98,8 @@ def merge_csv_results(root_dir):
     else:
         aggregate_results(df)
 
-merge_csv_results(FLAGS.save_dir)
-
 def plot_scaleout_tput(root_dir):
-    df = pandas.read_csv(file)
+    df = pandas.read_csv(FLAGS.resfile)
     # header_row = df.head(1)
     # averaged_results = df.tail(1)
     # df = pandas.concat([header_row,averaged_results])
@@ -119,8 +119,7 @@ def plot_scaleout_tput(root_dir):
     plt.legend(fontsize=18, loc='upper left')
     filename= "plot.jpg"
     plt.savefig(filename, format='jpg')
-    
-plot_scaleout_tput(FLAGS.save_dir)
+
 
 def plot_tput(file):
     df = pandas.read_csv(file)
@@ -144,6 +143,18 @@ def plot_tput(file):
     filename= "plot.jpg"
     plt.savefig(filename, format='jpg')
     
+# ==========================================================================================================================================
+# Script
+# ==========================================================================================================================================
+
+merge_csv_results(FLAGS.save_dir)
+
+# plot_scaleout_tput(FLAGS.save_dir)
+
+# ==========================================================================================================================================
+# Old Functions
+# ==========================================================================================================================================
+
 
 # plot_tput('writes.csv')
     

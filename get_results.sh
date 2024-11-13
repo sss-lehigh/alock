@@ -3,7 +3,12 @@
 source "exp.conf"
 
 user=${ssh_user}
-machines=("apt177" "apt180" "apt157" "apt081" "apt129" "apt088" "apt174" "apt132" "apt086" "apt130" "apt142" "apt186" "apt068" "apt131" "apt158" "apt149" "apt083" "apt164" "apt145" "apt176" "apt076" "apt071" "apt152" "apt091" "apt138" "apt069" "apt173" "apt162" "apt156" "apt183" "apt178" "apt141" "apt175" "apt187" "apt136" "apt190" "apt179" "apt140" "apt154" "apt184" "apt163" "apt092" "apt192" "apt137" "apt072")
+machines=("apt183" "apt192" "apt175" "apt180" "apt182" "apt178" "apt181" "apt176" "apt186" "apt184" 
+          "apt187" "apt177" "apt076" "apt190" "apt118" "apt153" "apt072" "apt098" "apt162" "apt145" 
+          "apt071" "apt158" "apt140" "apt185" "apt149" "apt156" "apt082" "apt073" "apt152" "apt081" 
+          "apt129" "apt088" "apt106" "apt083" "apt164" "apt120" "apt070" "apt173" "apt069" "apt179" 
+          "apt086" "apt066" "apt131" "apt146" "apt091" "apt191" "apt142" "apt157" "apt141" "apt154")
+
 domain="apt.emulab.net"
 
  
@@ -12,7 +17,7 @@ if [[ "${topology}" -eq 1 ]]; then
 else
     mode="rand"
 fi
-path="results/n${num_nodes}/write/t${thread_count}/$mode"
+path="test_results/n${num_nodes}/write/t${thread_count}/$mode"
 
 mkdir -p ${path}
 cd ${path}
