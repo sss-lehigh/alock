@@ -5,7 +5,8 @@
 
 In the directory now containing your alock repo, download our internal RDMA library, remus, which can be found at https://github.com/sss-lehigh/remus.git.
 
-Create a cloudlab experiment, or add your own cluster information to the $user, $machines and $domain variables in setup.sh. These scripts are intended to be run from a local computer containing the repos. Make sure this local computer is properly setup with an SSH key on cloudlab. 
+Create a cloudlab experiment, or add your own cluster information to the $ssh_user, $machines and $domain variables in exp.conf. 
+These scripts are intended to be run from a local computer containing the repos. Make sure this local computer is properly setup with an SSH key on cloudlab. 
 
 
 ## Build Dependecies
@@ -53,6 +54,10 @@ Update exp.conf to desired experiment parameters.
 
 <!-- Builds executable, sends to nodes, and runs exp_run.sh  -->
 bash run.sh  <!-- TODO: Make sure to update with cloudlab node info  -->
+
+After running the run.sh script, tmux sessions will be launched for each node that you connect to. 
+You can either type exit in each session to check each session before exiting.
+Or, you can use ``tmux kill-server``to cleanly and gracefully kill all open tmux sessions. This is preferred for large node experiments. 
 
 <!-- Reruns experiment without updating from exp.conf-->
 bash exp_run.sh

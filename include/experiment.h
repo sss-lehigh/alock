@@ -6,7 +6,7 @@
 /// @param node_id The node's id. (nodeX in cloudlab should have X in this option)
 /// @param runtime How long to run the experiment for
 /// @param unlimited_stream If the stream should be endless, stopping after runtime
-/// @param topology If the experiment should use the topology stream, or random stream by default
+/// @param stream_type topology stream, cluster stream, or random stream by default
 /// @param op_count How many operations to run. Only valid if not unlimited_stream
 /// @param region_size How big the memory region should be in 2^x bytes
 /// @param thread_count How many threads to spawn with the operations
@@ -25,8 +25,8 @@ public:
     int runtime;
     /// If the stream should be endless, stopping after runtime
     bool unlimited_stream;
-    //If the experiment should use the topology stream, or random stream by default
-    bool topology;
+    //topology stream (1), cluster stream (2), or random stream by default (0)
+    int stream_type;
     /// How many operations to run. Only valid if not unlimited_stream
     int op_count;
     /// How big the memory region should be in 2^x bytes
@@ -54,7 +54,7 @@ public:
         node_id = args.iget("--node_id");
         runtime = args.iget("--runtime");
         unlimited_stream = args.bget("--unlimited_stream");
-        topology = args.bget("--topology");
+        stream_type = args.iget("--stream_type");
         op_count = args.iget("--op_count");
         region_size = args.iget("--region_size");
         thread_count = args.iget("--thread_count");
@@ -88,7 +88,7 @@ public:
     Result(BenchmarkParams params_) : params(params_) {}
 
     static const std::string result_as_string_header() {
-        return "node_id,runtime,unlimited_stream,topology,op_count,region_size,thread_count,node_count,qp_max,p_local,min_key,max_key,localb,remoteb,count,runtime_ns,units,mean,stdev,min,p50,p90,p95,p99,p999,max\n";
+        return "node_id,runtime,unlimited_stream,stream_type,op_count,region_size,thread_count,node_count,qp_max,p_local,min_key,max_key,localb,remoteb,count,runtime_ns,units,mean,stdev,min,p50,p90,p95,p99,p999,max\n";
     }
 
     std::string result_as_string(){
@@ -96,7 +96,7 @@ public:
         builder += std::to_string(params.node_id) + ",";
         builder += std::to_string(params.runtime) + ",";
         builder += std::to_string(params.unlimited_stream) + ",";
-        builder += std::to_string(params.topology) + ",";
+        builder += std::to_string(params.stream_type) + ",";
         builder += std::to_string(params.op_count) + ",";
         builder += std::to_string(params.region_size) + ",";
         builder += std::to_string(params.thread_count) + ",";
@@ -128,7 +128,7 @@ public:
         builder += "\t\tnode_id: " + std::to_string(params.node_id) + "\n";
         builder += "\t\truntime: " + std::to_string(params.runtime) + "\n";
         builder += "\t\tunlimited_stream: " + std::to_string(params.unlimited_stream) + "\n";
-        builder += "\t\ttopology: " + std::to_string(params.topology) + "\n";
+        builder += "\t\tstream_type: " + std::to_string(params.stream_type) + "\n";
         builder += "\t\top_count: " + std::to_string(params.op_count) + "\n";
         builder += "\t\tregion_size: " + std::to_string(params.region_size) + "\n";
         builder += "\t\tthread_count: " + std::to_string(params.thread_count) + "\n";
