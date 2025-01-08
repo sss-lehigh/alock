@@ -53,11 +53,17 @@ def average_results(df):
     print(f"Merged results saved to '{merged_csv_path}'.")
 
 def aggregate_results(df):
-    # Aggregate columns (e.g., sum)
-    aggregates = df.sum(axis=0)  # Sum along the columns
+    # Retain the first five columns as they are
+    retained_values = df.iloc[:, :5].iloc[[-1]].reset_index(drop=True)
     
-    # Create a new DataFrame with the aggregate values
-    aggregate_df = pandas.DataFrame(aggregates).T  # Transpose to have a single row
+    # Aggregate only the columns starting from the 6th column
+    aggregates = df.iloc[:, 5:].sum(axis=0)
+    
+    # Create a DataFrame for the aggregated values
+    aggregate_df = pandas.DataFrame([aggregates])
+    
+    # Concatenate the retained first five columns with the aggregated columns
+    aggregate_df = pandas.concat([retained_values, aggregate_df], axis=1)
     
     # Append the new row to the original DataFrame
     df = pandas.concat([df, aggregate_df], ignore_index=True)
@@ -144,7 +150,8 @@ def plot_tput(file):
     plt.savefig(filename, format='jpg')
     
 
-def plot_latency()
+def plot_latency():
+    return
     
 # ==========================================================================================================================================
 # Script
