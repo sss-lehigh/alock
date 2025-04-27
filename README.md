@@ -1,5 +1,6 @@
 # ALock README
 
+** WARNING: Library is uses a deprecated RDMA library. Proceed with caution **
 
 # Setup
 
